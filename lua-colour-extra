@@ -1,0 +1,29 @@
+function textoColorido(sin)
+  local out={}
+  sin:gsub("^([^<]*)", function(txt)
+                        out[#out+1]={0,0,0}
+                        out[#out+1]=txt
+                      end)
+  sin:gsub("<(.-):(.-)>([^<]*)", function (col,txt,btxt)
+                                    local dict={red={1,0,0},blue={0,0,1},green={0,1,0},yellow={1,1,0},magenta={1,0,1},cyan={0,1,1},gray={0.5,0.5,0.5},white={1,1,1}}
+                                    out[#out+1]=dict[col]
+                                    out[#out+1]=txt
+                                    out[#out+1]={0,0,0}
+                                    out[#out+1]=btxt
+                                  end)
+
+  return out
+end
+function love.load()
+  love.graphics.setBackgroundColor(1,1,1)
+  msg="Enter text here:"
+end
+function love.draw()
+  love.graphics.print(textoColorido(msg))
+end
+function love.textinput(text)
+  msg=msg..text
+  msg=msg:gsub("%*(.-)%*","<red:%1>")
+  msg=msg:gsub("_(.-)_","<green:%1>")
+  msg=msg:gsub("%-(.-)%-","<blue:%1>")
+end
